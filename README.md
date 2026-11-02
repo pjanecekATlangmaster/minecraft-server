@@ -32,8 +32,9 @@ Logy jsou v `data\logs`, svět v `data\world`.
 1. Podívej se do logu kontejneru `minecraft`. První start stahuje server a generuje svět, trvá to několik minut. Konzole se připojí až po hlášce `Done` a `RCON running on 0.0.0.0:25575`.
 2. V `data\server.properties` musí být `enable-rcon=true`, `rcon.port=25575` a `rcon.password` stejné jako `RCON_PASSWORD` v `.env`.
 3. Po změně `.env` nebo `docker-compose.yml` projekt v Container Manageru zastav a znovu **Sestav**, aby se změny projevily.
-4. Pokud log hlásí `EAI_AGAIN` nebo `UnknownHostException`, kontejnery nemají DNS. V compose je proto nastavené `dns: 1.1.1.1, 8.8.8.8`; zkontroluj i DNS v Ovládací panel -> Síť.
-5. Pokud server v logu padá na `Permission denied` nad `/data`, nesedí `UID`/`GID` (viz níže).
+4. Pokud konzole hlásí `RconServer [mc:25575]: Connection timed out` nebo log `EAI_AGAIN` / `UnknownHostException`, blokuje firewall DSM provoz kontejnerů (síť Dockeru 172.16.0.0/12). V Ovládací panel -> Zabezpečení -> Brána firewall -> Upravit pravidla přidej pravidlo: Porty **Vše**, Zdrojová IP **Podsíť 172.16.0.0 / 255.240.0.0**, Akce **Povolit**, a posuň ho nahoru nad pravidla „Odepřít“.
+5. Pokud log hlásí `EAI_AGAIN` nebo `UnknownHostException`, kontejnery nemají DNS. V compose je proto nastavené `dns: 1.1.1.1, 8.8.8.8`; zkontroluj i DNS v Ovládací panel -> Síť.
+6. Pokud server v logu padá na `Permission denied` nad `/data`, nesedí `UID`/`GID` (viz níže).
 
 ## UID / GID (práva k souborům)
 Aby šly soubory v `data` upravovat přes síťovou složku, server musí běžet pod tvým uživatelem.
@@ -41,7 +42,7 @@ Přes SSH na NASu zadej `id tvuj_uzivatel` a čísla `uid` a `gid` dej do `UID` 
 Výchozí 1026/100 sedí na prvního vytvořeného uživatele.
 
 ## Firewall a přístup z internetu
-- Pokud máš zapnutý firewall DSM, povol porty 25565 (hra) a 4326–4327 (konzole) pro místní síť.
+- Pokud máš zapnutý firewall DSM, povol porty 25565 (hra) a 4326–4327 (konzole) pro místní síť a navíc vše ze zdrojové podsítě Dockeru 172.16.0.0/255.240.0.0 (jinak se kontejnery nespojí mezi sebou ani s internetem).
 - Pro hraní z internetu přesměruj na routeru jen port **25565/TCP** na 192.168.10.11.
   Porty konzole (4326, 4327) do internetu nevystavuj.
 

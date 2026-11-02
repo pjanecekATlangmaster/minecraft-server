@@ -1,0 +1,59 @@
+# Minecraft Java server 26.3 (vanilla) + webová konzole – pro Synology NAS
+#
+# Umístění na NASu:  /volume1/docker/minecraft/   (= \\192.168.10.11\docker\minecraft\)
+# Nasazení: Container Manager -> Projekt -> Vytvořit -> cesta /volume1/docker/minecraft
+#           -> "Použít existující docker-compose.yml"
+#
+# Po startu:
+#   hra:            192.168.10.11:25565
+#   webová konzole: http://192.168.10.11:4326   (whitelist, op, kick, ban, příkazy, stop = restart)
+#   soubory:        \\192.168.10.11\docker\minecraft\data  (server.properties, logy, zálohy)
+#
+# Hesla jsou v souboru .env (vytvoř ho z .env.example, do gitu nepatří).
+services:
+  mc:
+    # Image stahuje server.jar od Mojangu podle VERSION. java25 = Java 25 (nutná pro 26.x).
+    image: ghcr.io/itzg/minecraft-server:java25   # GitHub Container Registry
+    container_name: minecraft
+    restart: unless-stopped     # po příkazu "stop" v konzoli se server sám znovu spustí = restart
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "VANILLA"
+      VERSION: "26.3"           # <- pro update změň na novější verzi
+      MEMORY: "4G"              # podle RAM NASu (NAS s 8 GB: 3–4G je rozumné)
+      TZ: "Europe/Prague"
+      # Vlastník souborů v ./data. Zjistíš přes SSH na NASu příkazem: id <tvuj_uzivatel>
+      # Typicky první uživatel na Synology: UID 1026, skupina users GID 100.
+      UID: "1026"
+      GID: "100"
+      ENABLE_RCON: "TRUE"
+      RCON_PASSWORD: "${RCON_PASSWORD}"
+      # Nastavení hry (MOTD, obtížnost, počet hráčů…) upravuj přímo v data/server.properties.
+      SKIP_SERVER_PROPERTIES: "TRUE"
+    volumes:
+      - /volume1/docker/minecraft/data:/data
+    tty: true
+    stdin_open: true
+
+  # Webová konzole přes RCON
+  konzole:
+    image: itzg/rcon   # Docker Hub (na ghcr.io se nepublikuje), mění se zřídka
+    container_name: minecraft-konzole
+    restart: unless-stopped
+    depends_on: [mc]
+    ports:
+      - "4326:4326"   # web
+      - "4327:4327"   # websocket pro web
+    environment:
+      RWA_USERNAME: "admin"
+      RWA_PASSWORD: "${WEB_PASSWORD}"
+      RWA_ADMIN: "TRUE"
+      RWA_GAME: "minecraft"
+      RWA_SERVER_NAME: "Minecraft"
+      RWA_RCON_HOST: "mc"
+      RWA_RCON_PORT: "25575"
+      RWA_RCON_PASSWORD: "${RCON_PASSWORD}"
+    volumes:
+      - /volume1/docker/minecraft/konzole-db:/opt/rcon-web-admin/db

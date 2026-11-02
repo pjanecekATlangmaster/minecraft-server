@@ -29,6 +29,7 @@ uprav (MOTD, obtížnost, max hráčů, seed…) a v konzoli zadej `stop` pro re
 Logy jsou v `data\logs`, svět v `data\world`.
 
 ## Konzole hlásí „server není dostupný“
+1. Restartuj kontejner `minecraft-konzole`. Konzole se k serveru připojuje jen při svém startu, takže když nastartovala dřív než server, sama se nepřipojí.
 1. Podívej se do logu kontejneru `minecraft`. První start stahuje server a generuje svět, trvá to několik minut. Konzole se připojí až po hlášce `Done` a `RCON running on 0.0.0.0:25575`.
 2. V `data\server.properties` musí být `enable-rcon=true`, `rcon.port=25575` a `rcon.password` stejné jako `RCON_PASSWORD` v `.env`.
 3. Po změně `.env` nebo `docker-compose.yml` projekt v Container Manageru zastav a znovu **Sestav**, aby se změny projevily.

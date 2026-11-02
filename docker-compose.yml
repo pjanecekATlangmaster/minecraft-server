@@ -48,7 +48,9 @@ services:
       - 1.1.1.1
       - 8.8.8.8
     restart: unless-stopped
-    depends_on: [mc]
+    depends_on:
+      mc:
+        condition: service_healthy   # konzole startuje až po naběhnutí serveru (jinak se nepřipojí)
     ports:
       - "4326:4326"   # web
       - "4327:4327"   # websocket pro web

@@ -28,6 +28,12 @@ Otevři `\\192.168.10.11\docker\minecraft\data\server.properties` v Poznámkové
 uprav (MOTD, obtížnost, max hráčů, seed…) a v konzoli zadej `stop` pro restart.
 Logy jsou v `data\logs`, svět v `data\world`.
 
+## Konzole hlásí „server není dostupný“
+1. Podívej se do logu kontejneru `minecraft`. První start stahuje server a generuje svět, trvá to několik minut. Konzole se připojí až po hlášce `Done` a `RCON running on 0.0.0.0:25575`.
+2. V `data\server.properties` musí být `enable-rcon=true`, `rcon.port=25575` a `rcon.password` stejné jako `RCON_PASSWORD` v `.env`.
+3. Po změně `.env` nebo `docker-compose.yml` projekt v Container Manageru zastav a znovu **Sestav**, aby se změny projevily.
+4. Pokud server v logu padá na `Permission denied` nad `/data`, nesedí `UID`/`GID` (viz níže).
+
 ## UID / GID (práva k souborům)
 Aby šly soubory v `data` upravovat přes síťovou složku, server musí běžet pod tvým uživatelem.
 Přes SSH na NASu zadej `id tvuj_uzivatel` a čísla `uid` a `gid` dej do `UID` a `GID`.

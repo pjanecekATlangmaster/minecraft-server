@@ -32,7 +32,8 @@ Logy jsou v `data\logs`, svět v `data\world`.
 1. Podívej se do logu kontejneru `minecraft`. První start stahuje server a generuje svět, trvá to několik minut. Konzole se připojí až po hlášce `Done` a `RCON running on 0.0.0.0:25575`.
 2. V `data\server.properties` musí být `enable-rcon=true`, `rcon.port=25575` a `rcon.password` stejné jako `RCON_PASSWORD` v `.env`.
 3. Po změně `.env` nebo `docker-compose.yml` projekt v Container Manageru zastav a znovu **Sestav**, aby se změny projevily.
-4. Pokud server v logu padá na `Permission denied` nad `/data`, nesedí `UID`/`GID` (viz níže).
+4. Pokud log hlásí `EAI_AGAIN` nebo `UnknownHostException`, kontejnery nemají DNS. V compose je proto nastavené `dns: 1.1.1.1, 8.8.8.8`; zkontroluj i DNS v Ovládací panel -> Síť.
+5. Pokud server v logu padá na `Permission denied` nad `/data`, nesedí `UID`/`GID` (viz níže).
 
 ## UID / GID (práva k souborům)
 Aby šly soubory v `data` upravovat přes síťovou složku, server musí běžet pod tvým uživatelem.

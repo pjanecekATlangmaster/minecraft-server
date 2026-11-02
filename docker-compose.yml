@@ -30,8 +30,8 @@ services:
       GID: "100"
       ENABLE_RCON: "TRUE"
       RCON_PASSWORD: "${RCON_PASSWORD}"
-      # Nastavení hry (MOTD, obtížnost, počet hráčů…) upravuj přímo v data/server.properties.
-      SKIP_SERVER_PROPERTIES: "TRUE"
+      # Ostatní nastavení hry (MOTD, obtížnost, počet hráčů…) upravuj přímo v data/server.properties.
+      # Image při startu přepisuje jen vlastnosti, které jsou zadané tady (např. RCON), ostatní nechá být.
     volumes:
       - /volume1/docker/minecraft/data:/data
     tty: true

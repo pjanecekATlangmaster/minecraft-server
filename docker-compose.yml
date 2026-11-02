@@ -15,6 +15,9 @@ services:
     # Image stahuje server.jar od Mojangu podle VERSION. java25 = Java 25 (nutná pro 26.x).
     image: ghcr.io/itzg/minecraft-server:java25   # GitHub Container Registry
     container_name: minecraft
+    dns:                        # Synology: kontejnery jinak někdy neumí přeložit jména (EAI_AGAIN)
+      - 1.1.1.1
+      - 8.8.8.8
     restart: unless-stopped     # po příkazu "stop" v konzoli se server sám znovu spustí = restart
     ports:
       - "25565:25565"
@@ -41,6 +44,9 @@ services:
   konzole:
     image: itzg/rcon   # Docker Hub (na ghcr.io se nepublikuje), mění se zřídka
     container_name: minecraft-konzole
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     restart: unless-stopped
     depends_on: [mc]
     ports:

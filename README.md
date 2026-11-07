@@ -44,9 +44,13 @@ Server běží na **Fabricu** (vanilla hra s podporou modů) a při startu si s�
 5. Ve hře klávesa **V** otevře nastavení hlasu (mikrofon, hlasitost), výchozí je hlasová aktivace,
    push-to-talk je na klávese **Caps Lock** (lze přenastavit). Klávesa **G** = skupiny.
 
-**Doména přes Cloudflare + MikroTik:** záznam pro hru (CNAME na MikroTik DDNS) musí být **DNS only (šedý mráček)**,
-Cloudflare proxy UDP nepropustí. Klient posílá hlas na stejnou doménu jako hru, jen na port 24454, takže `voice_host`
-nastavovat netřeba. Na MikroTiku přidej přesměrování (rozhraní WAN uprav podle sebe):
+**Doména přes Cloudflare + MikroTik:** hra může jít přes proxy (oranžový mráček + pravidlo pro port),
+ale UDP pro hlas Cloudflare nepropustí. Proto:
+1. V Cloudflare DNS přidej zvláštní záznam jen pro hlas: `CNAME` `voice` -> cíl MikroTik DDNS (`…sn.mynetname.net`),
+   Proxy status **DNS only** (šedý mráček).
+2. V `data\config\voicechat\voicechat-server.properties` nastav `voice_host=voice.tvadomena:24454`
+   a restartuj server (`stop` v konzoli). Bez toho by klient posílal hlas na doménu hry, tedy na Cloudflare.
+3. Na MikroTiku přidej přesměrování (rozhraní WAN uprav podle sebe):
 ```
 /ip firewall nat add chain=dstnat in-interface-list=WAN protocol=udp dst-port=24454 action=dst-nat to-addresses=192.168.10.11 to-ports=24454 comment="Minecraft voice chat"
 ```

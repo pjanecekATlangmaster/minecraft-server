@@ -4,7 +4,8 @@
 # Co dělá:
 #   1. Zeptá se registru, jestli existuje novější image (docker pull stáhne jen změněné vrstvy,
 #      při stejné verzi nestáhne nic).
-#   2. Když se žádný image nezměnil -> skončí, nic nerestartuje.
+#   2. Když se žádný image nezměnil a docker-compose.yml (ani .env) je stejný jako při minulém
+#      nasazení -> skončí, nic nerestartuje.
 #   3. Když je nový image -> varuje hráče ve hře, počká, kontejnery znovu vytvoří
 #      (docker compose up -d restartuje jen ty, kterých se změna týká) a smaže staré image.
 #
@@ -20,6 +21,7 @@ PROJEKT="minecraft"            # stejný název jako projekt v Container Manager
 VAROVANI_S=60                  # kolik sekund předem varovat hráče před restartem
 LOG="$DIR/aktualizace.log"
 ZAMEK="/tmp/minecraft-aktualizace.lock"
+OTISK="$DIR/.compose-otisk"    # otisk naposledy nasazeného docker-compose.yml
 
 PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
@@ -70,13 +72,20 @@ for IMG in $IMAGES; do
   fi
 done
 
+# Změna v docker-compose.yml / .env od posledního nasazení?
+NOVY_OTISK=$($COMPOSE config 2>/dev/null | md5sum | cut -d' ' -f1)
+if [ -n "$NOVY_OTISK" ] && [ "$NOVY_OTISK" != "$(cat "$OTISK" 2>/dev/null)" ]; then
+  log "Změna v docker-compose.yml"
+  ZMENA="$ZMENA docker-compose.yml"
+fi
+
 if [ -z "$ZMENA" ]; then
   log "Žádná nová verze, nic neměním."
   konec
 fi
 
 # Varování hráčům, jen když se mění image serveru (ne jen konzole) a server běží.
-if echo "$ZMENA" | grep -q 'minecraft-server' && docker ps -q -f name='^minecraft$' | grep -q .; then
+if echo "$ZMENA" | grep -qE 'minecraft-server|docker-compose' && docker ps -q -f name='^minecraft$' | grep -q .; then
   docker exec minecraft rcon-cli "say Server se za $VAROVANI_S s restartuje kvůli aktualizaci." >/dev/null 2>&1
   sleep "$VAROVANI_S"
   docker exec minecraft rcon-cli "save-all flush" >/dev/null 2>&1
@@ -84,6 +93,7 @@ fi
 
 log "Nasazuji:$ZMENA"
 if $COMPOSE up -d --remove-orphans >>"$LOG" 2>&1; then
+  echo "$NOVY_OTISK" >"$OTISK"
   log "Hotovo."
 else
   log "ERROR: docker compose up selhal, podívej se do Container Manageru."

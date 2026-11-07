@@ -96,7 +96,20 @@ Tag `java25` je „plovoucí“: autor do něj průběžně vydává opravy, tak
 3. Container Manager -> Projekt -> `minecraft` -> **Zastavit**, pak **Akce -> Sestavit**.
    Server si při startu stáhne nový server.jar od Mojangu.
 
-**Aktualizace samotného image (opravy, nová Java):**
+**Automatická aktualizace image (skript `aktualizovat.sh`):**
+Skript zkontroluje, jestli je v registru novější image. Když není, nic nestahuje a nic nerestartuje.
+Když je, varuje hráče ve hře, za 60 s uloží svět, znovu vytvoří jen změněné kontejnery a smaže staré image.
+Vždy končí bez chyby, takže DSM neposílá mail. Co udělal, najdeš v `aktualizace.log`.
+1. Nakopíruj `aktualizovat.sh` do `\\192.168.10.11\docker\minecraft\`.
+2. Ovládací panel -> **Plánovač úloh** -> Vytvořit -> Naplánovaná úloha -> **Skript definovaný uživatelem**.
+3. Obecné: uživatel **root**. Plán: třeba denně ve 4:00.
+4. Nastavení úlohy -> Spustit příkaz: `sh /volume1/docker/minecraft/aktualizovat.sh`.
+   Políčko „Odeslat podrobnosti spuštění e-mailem“ nech vypnuté.
+
+Skript řeší jen nový image. Změnu `VERSION` v compose nasadíš ručně (Zastavit -> Sestavit).
+Mody (voice chat) se aktualizují samy při každém startu serveru.
+
+**Ruční aktualizace samotného image (opravy, nová Java):**
 - Container Manager -> **Image** -> u `ghcr.io/itzg/minecraft-server` se objeví **Aktualizace k dispozici** -> klikni.
 - Nebo přes SSH: `cd /volume1/docker/minecraft && sudo docker compose pull && sudo docker compose up -d`
 

@@ -33,16 +33,24 @@ Server běží na **Fabricu** (vanilla hra s podporou modů) a při startu si s�
 3. Firewall DSM: povol port **24454/UDP** (Ovládací panel -> Zabezpečení -> Brána firewall).
 4. Hraní z internetu: na routeru přesměruj kromě 25565/TCP i **24454/UDP** na 192.168.10.11.
 
-**Každý hráč (na svém PC):**
-1. Stáhni a spusť instalátor Fabricu z https://fabricmc.net/use/installer/ -> Client -> verze **26.3** -> Install.
-2. Z Modrinthu stáhni pro 26.3 / Fabric:
-   - Fabric API: https://modrinth.com/mod/fabric-api
-   - Simple Voice Chat: https://modrinth.com/plugin/simple-voice-chat
-3. Oba `.jar` soubory dej do `%appdata%\.minecraft\mods` (složku případně vytvoř).
-4. V launcheru vyber profil **fabric-loader-26.3** a spusť hru.
-   Jednodušší alternativa: launcher Modrinth App nebo Prism Launcher, kde mody přidáš kliknutím.
-5. Ve hře klávesa **V** otevře nastavení hlasu (mikrofon, hlasitost), výchozí je hlasová aktivace,
-   push-to-talk je na klávese **Caps Lock** (lze přenastavit). Klávesa **G** = skupiny.
+**Každý hráč (na svém PC) – nejjednodušší cesta, modpack:**
+1. Nainstaluj **Modrinth App** (https://modrinth.com/app) a přihlas se Microsoft účtem s Minecraftem.
+2. Stáhni soubor [`modpack/Minecraft-Grussova.mrpack`](modpack/Minecraft-Grussova.mrpack) a otevři ho dvojklikem
+   (nebo v aplikaci: **+** -> Import / From file). Aplikace sama nainstaluje Minecraft 26.3, Fabric a oba mody.
+3. Spusť instanci **Minecraft Grussova** -> Multiplayer, server **Grussova** už je v seznamu.
+Stejný soubor jde importovat i do Prism Launcheru (Add Instance -> Import).
+
+Ve hře klávesa **V** otevře nastavení hlasu (mikrofon, hlasitost), výchozí je hlasová aktivace,
+push-to-talk je na klávese **Caps Lock** (lze přenastavit). Klávesa **G** = skupiny.
+
+**Ručně bez modpacku (oficiální launcher):**
+1. Instalátor Fabricu z https://fabricmc.net/use/installer/ -> Client -> verze **26.3** -> Install.
+2. Z Modrinthu pro 26.3 / Fabric: [Fabric API](https://modrinth.com/mod/fabric-api) a
+   [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) (verze pro 26.3 jsou zatím „beta“).
+3. Oba `.jar` dej do `%appdata%\.minecraft\mods` a spusť profil **fabric-loader-26.3**.
+
+**Nová verze modpacku** (po změně `VERSION` nebo kvůli novým verzím modů): uprav `MC_VERSION`
+v `modpack/sestavit.py`, spusť `python3 modpack/sestavit.py` a nový `.mrpack` pošli hráčům.
 
 **Doména přes Cloudflare + MikroTik:** hra může jít přes proxy (oranžový mráček + pravidlo pro port),
 ale UDP pro hlas Cloudflare nepropustí. Proto:

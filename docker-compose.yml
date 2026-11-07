@@ -31,6 +31,8 @@ services:
       # Mody se stahují z Modrinthu automaticky ve verzi pro VERSION. Další mod = přidej jeho slug za čárku.
       MODRINTH_PROJECTS: "fabric-api,simple-voice-chat"
       MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
+      # Simple Voice Chat vydává verze pro 26.x jako "beta", bez tohohle by je server nestáhl.
+      MODRINTH_ALLOWED_VERSION_TYPE: "beta"
       MEMORY: "4G"              # podle RAM NASu (NAS s 8 GB: 3–4G je rozumné)
       TZ: "Europe/Prague"
       # Vlastník souborů v ./data. Zjistíš přes SSH na NASu příkazem: id <tvuj_uzivatel>

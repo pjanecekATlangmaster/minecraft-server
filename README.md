@@ -106,7 +106,7 @@ Vždy končí bez chyby, takže DSM neposílá mail. Co udělal, najdeš v `aktu
 4. Nastavení úlohy -> Spustit příkaz: `sh /volume1/docker/minecraft/aktualizovat.sh`.
    Políčko „Odeslat podrobnosti spuštění e-mailem“ nech vypnuté.
 
-Skript řeší jen nový image. Změnu `VERSION` v compose nasadíš ručně (Zastavit -> Sestavit).
+Skript nasadí i změněný `docker-compose.yml` nebo `.env` (třeba novou `VERSION`): stačí nahrát soubor a skript spustit.
 Mody (voice chat) se aktualizují samy při každém startu serveru.
 
 **Ruční aktualizace samotného image (opravy, nová Java):**

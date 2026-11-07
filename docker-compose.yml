@@ -1,4 +1,4 @@
-# Minecraft Java server 26.3 (vanilla) + webová konzole – pro Synology NAS
+# Minecraft Java server 26.3 (Fabric + Simple Voice Chat) + webová konzole – pro Synology NAS
 #
 # Umístění na NASu:  /volume1/docker/minecraft/   (= \\192.168.10.11\docker\minecraft\)
 # Nasazení: Container Manager -> Projekt -> Vytvořit -> cesta /volume1/docker/minecraft
@@ -6,6 +6,7 @@
 #
 # Po startu:
 #   hra:            192.168.10.11:25565
+#   voice chat:     192.168.10.11:24454/UDP  (mod Simple Voice Chat, hráči ho potřebují i v klientu)
 #   webová konzole: http://192.168.10.11:4326   (whitelist, op, kick, ban, příkazy, stop = restart)
 #   soubory:        \\192.168.10.11\docker\minecraft\data  (server.properties, logy, zálohy)
 #
@@ -21,10 +22,15 @@ services:
     restart: unless-stopped     # po příkazu "stop" v konzoli se server sám znovu spustí = restart
     ports:
       - "25565:25565"
+      - "24454:24454/udp"       # Simple Voice Chat (hlas jde přes UDP, ne přes herní port)
     environment:
       EULA: "TRUE"
-      TYPE: "VANILLA"
-      VERSION: "26.3"           # <- pro update změň na novější verzi
+      # Fabric = vanilla hra + možnost modů. Svět z vanilla serveru funguje beze změn.
+      TYPE: "FABRIC"
+      VERSION: "26.3"           # <- pro update změň na novější verzi (počkej, až mody vydají verzi pro ni)
+      # Mody se stahují z Modrinthu automaticky ve verzi pro VERSION. Další mod = přidej jeho slug za čárku.
+      MODRINTH_PROJECTS: "fabric-api,simple-voice-chat"
+      MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
       MEMORY: "4G"              # podle RAM NASu (NAS s 8 GB: 3–4G je rozumné)
       TZ: "Europe/Prague"
       # Vlastník souborů v ./data. Zjistíš přes SSH na NASu příkazem: id <tvuj_uzivatel>

@@ -1,4 +1,4 @@
-# Minecraft Java server 26.3 na Synology NAS
+# Minecraft Java server 26.3 (Fabric + voice chat) na Synology NAS
 
 ## Instalace
 1. V DSM nainstaluj **Container Manager** (Centrum balíčků). Potřebuješ NAS s procesorem x86_64 (Intel/AMD) a ideálně 8 GB RAM.
@@ -23,6 +23,35 @@ Užitečné příkazy:
 - `difficulty hard`, `gamerule keepInventory true`, `time set day`
 - `save-all`, `stop` (server se díky `restart: unless-stopped` znovu spustí = restart)
 
+## Voice chat (Simple Voice Chat)
+Server běží na **Fabricu** (vanilla hra s podporou modů) a při startu si sám stáhne z Modrinthu
+`fabric-api` a `simple-voice-chat` do `data\mods`. Hlas jde přes port **24454/UDP**.
+
+**Na serveru (jednou):**
+1. Container Manager -> Projekt -> `minecraft` -> **Zastavit**, pak **Akce -> Sestavit** (načte nový compose).
+2. V logu musí být `Voice chat server started at port 24454`.
+3. Firewall DSM: povol port **24454/UDP** (Ovládací panel -> Zabezpečení -> Brána firewall).
+4. Hraní z internetu: na routeru přesměruj kromě 25565/TCP i **24454/UDP** na 192.168.10.11.
+
+**Každý hráč (na svém PC):**
+1. Stáhni a spusť instalátor Fabricu z https://fabricmc.net/use/installer/ -> Client -> verze **26.3** -> Install.
+2. Z Modrinthu stáhni pro 26.3 / Fabric:
+   - Fabric API: https://modrinth.com/mod/fabric-api
+   - Simple Voice Chat: https://modrinth.com/plugin/simple-voice-chat
+3. Oba `.jar` soubory dej do `%appdata%\.minecraft\mods` (složku případně vytvoř).
+4. V launcheru vyber profil **fabric-loader-26.3** a spusť hru.
+   Jednodušší alternativa: launcher Modrinth App nebo Prism Launcher, kde mody přidáš kliknutím.
+5. Ve hře klávesa **V** otevře nastavení hlasu (mikrofon, hlasitost), výchozí je hlasová aktivace,
+   push-to-talk je na klávese **Caps Lock** (lze přenastavit). Klávesa **G** = skupiny.
+
+Hráč bez modu se na server připojí normálně, jen neslyší a nemluví.
+Konfigurace serverové části: `data\config\voicechat\voicechat-server.properties` (vzdálenost hlasu, port…).
+
+**Update Minecraftu s mody:** před změnou `VERSION` ověř na Modrinthu, že `simple-voice-chat` a `fabric-api`
+už mají verzi pro novou verzi hry, jinak server nenajde soubor a nenastartuje. Hráči pak aktualizují mody i u sebe.
+
+**Návrat na čistý vanilla:** vrať `TYPE: "VANILLA"` a smaž řádky `MODRINTH_*`. Svět zůstane.
+
 ## Nastavení serveru (server.properties)
 Otevři `\\192.168.10.11\docker\minecraft\data\server.properties` v Poznámkovém bloku,
 uprav (MOTD, obtížnost, max hráčů, seed…) a v konzoli zadej `stop` pro restart.
@@ -42,8 +71,8 @@ Přes SSH na NASu zadej `id tvuj_uzivatel` a čísla `uid` a `gid` dej do `UID` 
 Výchozí 1026/100 sedí na prvního vytvořeného uživatele.
 
 ## Firewall a přístup z internetu
-- Pokud máš zapnutý firewall DSM, povol porty 25565 (hra) a 4326–4327 (konzole) pro místní síť a navíc vše ze zdrojové podsítě Dockeru 172.16.0.0/255.240.0.0 (jinak se kontejnery nespojí mezi sebou ani s internetem).
-- Pro hraní z internetu přesměruj na routeru jen port **25565/TCP** na 192.168.10.11.
+- Pokud máš zapnutý firewall DSM, povol porty 25565 (hra), 24454/UDP (voice chat) a 4326–4327 (konzole) pro místní síť a navíc vše ze zdrojové podsítě Dockeru 172.16.0.0/255.240.0.0 (jinak se kontejnery nespojí mezi sebou ani s internetem).
+- Pro hraní z internetu přesměruj na routeru jen port **25565/TCP** a **24454/UDP** (voice chat) na 192.168.10.11.
   Porty konzole (4326, 4327) do internetu nevystavuj.
 
 ## Update

@@ -63,6 +63,16 @@ ale UDP pro hlas Cloudflare nepropustí. Proto:
 /ip firewall nat add chain=dstnat in-interface-list=WAN protocol=udp dst-port=24454 action=dst-nat to-addresses=192.168.10.11 to-ports=24454 comment="Minecraft voice chat"
 ```
 
+**Hraní z domácí sítě (LAN):** `voice.kibos.link` vede na veřejnou IP, a paket z LAN by NAT na WAN nechytil.
+Na MikroTiku proto přidej statický DNS záznam (PC v LAN musí používat MikroTik jako DNS):
+```
+/ip dns static add name=voice.kibos.link address=192.168.10.11 ttl=5m comment="Minecraft voice - LAN"
+```
+
+**Když hra hlásí „voice not connected“:** v logu serveru je `Sent secret to Hráč`, ale chybí
+`Successfully authenticated player` -> UDP z klienta nedorazí. Zkontroluj firewall DSM (24454/UDP povolit nad pravidly Odepřít),
+`sudo docker port minecraft` (musí obsahovat `24454/udp`), DNS na PC (`nslookup voice.kibos.link`) a restartuj PC.
+
 Hráč bez modu se na server připojí normálně, jen neslyší a nemluví.
 Konfigurace serverové části: `data\config\voicechat\voicechat-server.properties` (vzdálenost hlasu, port…).
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Sestaví modpack pro hráče (soubor .mrpack pro Modrinth App / Prism Launcher).
 
-Obsahuje: Fabric loader, Fabric API, Simple Voice Chat, Traveler's Backpack (+ povinné závislosti) a adresu serveru v seznamu serverů.
+Obsahuje: Fabric loader, Fabric API, Simple Voice Chat, Traveler's Backpack, PatPat, Clapping Cat (+ povinné závislosti) a adresu serveru v seznamu serverů.
 Verze modů bere z Modrinthu stejně jako server (nejnovější pro VERSION, včetně beta).
 
 Použití:  python3 modpack/sestavit.py
@@ -19,7 +19,7 @@ MC_VERSION = "26.3"
 NAZEV = "Minecraft Grussova"
 SERVER_NAZEV = "Grussova"
 SERVER_ADRESA = "grussova.kibos.link"
-MODY = ["fabric-api", "simple-voice-chat", "travelersbackpack"]
+MODY = ["fabric-api", "simple-voice-chat", "travelersbackpack", "patpat", "clapping-cat-meme"]
 # One Block (theoneblock + codxlib) běží jen na serveru, do klienta nepatří.
 
 API = "https://api.modrinth.com/v2"
@@ -99,9 +99,9 @@ def main():
     index = {
         "formatVersion": 1,
         "game": "minecraft",
-        "versionId": f"{MC_VERSION}-2",
+        "versionId": f"{MC_VERSION}-3",
         "name": NAZEV,
-        "summary": f"Fabric + Simple Voice Chat + Traveler's Backpack pro server {SERVER_ADRESA}",
+        "summary": f"Fabric + Simple Voice Chat + Traveler's Backpack + PatPat + Clapping Cat pro server {SERVER_ADRESA}",
         "files": vsechny_mody(),
         "dependencies": {"minecraft": MC_VERSION, "fabric-loader": loader},
     }

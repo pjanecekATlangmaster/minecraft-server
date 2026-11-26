@@ -1,4 +1,35 @@
-# Minecraft Java server 26.3 (Fabric + voice chat) na Synology NAS
+# Minecraft Java server 26.3 – One Block (Fabric + voice chat) na Synology NAS
+
+## One Block
+Svět je prázdnota a uprostřed jeden blok. Když ho vykopeš, objeví se jiný. Postupně se mění biomy,
+chodí vlny mobů a občas se otevře portál do dungeonu. Zajišťuje to mod
+[One Block](https://modrinth.com/mod/theoneblock) (+ knihovna [CodxLib](https://modrinth.com/mod/codxlib)),
+server si ho stáhne sám. **Hráči ho v klientu nepotřebují**, stačí jim stávající modpack (voice chat).
+
+V `docker-compose.yml`:
+- `LEVEL: "oneblock"` – složka nového světa v `data`. Starý svět `data\world` zůstává vedle.
+- `LEVEL_TYPE: "oneblock:oneblock"` – typ světa One Block (uplatní se jen při vytvoření světa).
+- `INITIAL_ENABLED_PACKS: "vanilla"` – všichni sdílí jeden blok. Pro vlastní ostrov každého hráče
+  změň na `vanilla,oneblock:oneblock_multiplayer` (jen před vytvořením světa, jinak nový svět).
+- `SPAWN_PROTECTION: "0"` – blok je na spawnu, bez toho by ho mohli kopat jen admini (op).
+
+Nastavení modu ve hře (jako op): `/oneblock admin` (menu v truhle: biomy, vlny, dungeony, hráči…),
+`/oneblock leaderboard`, `/oneblock help`. Konfigurace je v `data\config\oneblock.json`.
+
+### Reset: přechod ze starého světa na One Block
+1. Ve webové konzoli zadej `save-all`, pak Container Manager -> Projekt -> `minecraft` -> **Zastavit**.
+2. Záloha: zkopíruj si složku `\\192.168.10.11\docker\minecraft\data\world` na PC (pro jistotu).
+   Na serveru ji nech být, nový svět se jmenuje jinak, takže se jí nic nestane.
+3. Nahraj nový `docker-compose.yml` do `\\192.168.10.11\docker\minecraft\` (přepiš starý).
+4. Container Manager -> Projekt -> `minecraft` -> **Akce -> Sestavit**.
+5. V logu počkej na `Done`. Vznikne složka `data\oneblock` = nový svět. Whitelist a op zůstávají.
+6. Připoj se a kopej blok pod sebou.
+
+Když je nastavený `aktualizovat.sh` (Plánovač úloh), nasadí nahraný compose při dalším spuštění sám,
+krok 4 tedy můžeš vynechat a počkat, nebo skript spustit ručně.
+
+**Zpátky na starý svět:** v `docker-compose.yml` změň `LEVEL` na `"world"` a sestav projekt znovu.
+**Úplně nový One Block od nuly:** server zastav, složku `data\oneblock` smaž (nebo přejmenuj) a znovu sestav.
 
 ## Instalace
 1. V DSM nainstaluj **Container Manager** (Centrum balíčků). Potřebuješ NAS s procesorem x86_64 (Intel/AMD) a ideálně 8 GB RAM.

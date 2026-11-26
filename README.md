@@ -13,6 +13,12 @@ Server si ho stáhne sám (`travelersbackpack` + závislost `forge-config-api-po
 hráči ho dostanou v modpacku [`modpack/Minecraft-Grussova.mrpack`](modpack/Minecraft-Grussova.mrpack).
 Hráč bez modu se na server nepřipojí. Batoh, který máš na zádech, otevřeš klávesou **B**.
 
+## PatPat a Clapping Cat
+- [PatPat](https://modrinth.com/mod/patpat) – pohlaď jakéhokoli moba: **Shift + pravé tlačítko myši**.
+- [Clapping Cat Meme](https://modrinth.com/mod/clapping-cat-meme) – ochočená dospělá kočka (rybou) začne tleskat.
+
+Oba jsou na serveru i v modpacku (na klientu jsou kvůli animacím, textům a zvukům).
+
 V `docker-compose.yml`:
 - `LEVEL: "oneblock"` – složka nového světa v `data`. Starý svět `data\world` zůstává vedle.
 - `LEVEL_TYPE: "oneblock:oneblock"` – typ světa One Block (uplatní se jen při vytvoření světa).
@@ -74,7 +80,7 @@ Server běží na **Fabricu** (vanilla hra s podporou modů) a při startu si s�
 **Každý hráč (na svém PC) – nejjednodušší cesta, modpack:**
 1. Nainstaluj **Modrinth App** (https://modrinth.com/app) a přihlas se Microsoft účtem s Minecraftem.
 2. Stáhni soubor [`modpack/Minecraft-Grussova.mrpack`](modpack/Minecraft-Grussova.mrpack) a otevři ho dvojklikem
-   (nebo v aplikaci: **+** -> Import / From file). Aplikace sama nainstaluje Minecraft 26.3, Fabric a mody (voice chat, Traveler's Backpack).
+   (nebo v aplikaci: **+** -> Import / From file). Aplikace sama nainstaluje Minecraft 26.3, Fabric a mody (voice chat, Traveler's Backpack, PatPat, Clapping Cat).
 3. Spusť instanci **Minecraft Grussova** -> Multiplayer, server **Grussova** už je v seznamu.
 Stejný soubor jde importovat i do Prism Launcheru (Add Instance -> Import).
 
@@ -86,7 +92,8 @@ push-to-talk je na klávese **Caps Lock** (lze přenastavit). Klávesa **G** = s
 2. Z Modrinthu pro 26.3 / Fabric: [Fabric API](https://modrinth.com/mod/fabric-api),
    [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) (verze pro 26.3 jsou zatím „beta“),
    [Traveler's Backpack](https://modrinth.com/mod/travelersbackpack) a
-   [Forge Config API Port](https://modrinth.com/mod/forge-config-api-port).
+   [Forge Config API Port](https://modrinth.com/mod/forge-config-api-port), [PatPat](https://modrinth.com/mod/patpat)
+   a [Clapping Cat Meme](https://modrinth.com/mod/clapping-cat-meme).
 3. Všechny `.jar` dej do `%appdata%\.minecraft\mods` a spusť profil **fabric-loader-26.3**.
 
 **Nová verze modpacku** (po změně `VERSION` nebo kvůli novým verzím modů): uprav `MC_VERSION`

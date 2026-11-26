@@ -1,4 +1,4 @@
-# Minecraft Java server 26.3 (Fabric + Simple Voice Chat) + webová konzole – pro Synology NAS
+# Minecraft Java server 26.3 – One Block (Fabric + One Block + Simple Voice Chat) + webová konzole – pro Synology NAS
 #
 # Umístění na NASu:  /volume1/docker/minecraft/   (= \\192.168.10.11\docker\minecraft\)
 # Nasazení: Container Manager -> Projekt -> Vytvořit -> cesta /volume1/docker/minecraft
@@ -29,10 +29,22 @@ services:
       TYPE: "FABRIC"
       VERSION: "26.3"           # <- pro update změň na novější verzi (počkej, až mody vydají verzi pro ni)
       # Mody se stahují z Modrinthu automaticky ve verzi pro VERSION. Další mod = přidej jeho slug za čárku.
-      MODRINTH_PROJECTS: "fabric-api,simple-voice-chat"
+      # theoneblock + codxlib = One Block (jen na serveru, hráči ho v klientu nepotřebují).
+      MODRINTH_PROJECTS: "fabric-api,simple-voice-chat,theoneblock,codxlib"
       MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
       # Simple Voice Chat vydává verze pro 26.x jako "beta", bez tohohle by je server nestáhl.
       MODRINTH_ALLOWED_VERSION_TYPE: "beta"
+      # --- One Block ---
+      # LEVEL = název složky světa v ./data. Nový název = server vytvoří nový svět,
+      # starý svět ("world") zůstane nedotčený vedle jako záloha.
+      LEVEL: "oneblock"
+      # Typ světa z modu One Block: prázdnota a jeden obnovující se blok. Platí jen při vytváření světa.
+      LEVEL_TYPE: "oneblock:oneblock"
+      # Datapacky modu zapnuté při vytvoření světa. Jeden společný blok pro všechny = jen "vanilla".
+      # Každý hráč vlastní ostrov = přidej ",oneblock:oneblock_multiplayer" (jen před vytvořením světa).
+      INITIAL_ENABLED_PACKS: "vanilla"
+      # Ochrana spawnu by ne-adminům nedovolila blok kopat (blok je přímo na spawnu).
+      SPAWN_PROTECTION: "0"
       MEMORY: "4G"              # podle RAM NASu (NAS s 8 GB: 3–4G je rozumné)
       TZ: "Europe/Prague"
       # Vlastník souborů v ./data. Zjistíš přes SSH na NASu příkazem: id <tvuj_uzivatel>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Sestaví modpack pro hráče (soubor .mrpack pro Modrinth App / Prism Launcher).
 
-Obsahuje: Fabric loader, Fabric API, Simple Voice Chat a adresu serveru v seznamu serverů.
+Obsahuje: Fabric loader, Fabric API, Simple Voice Chat, Traveler's Backpack (+ povinné závislosti) a adresu serveru v seznamu serverů.
 Verze modů bere z Modrinthu stejně jako server (nejnovější pro VERSION, včetně beta).
 
 Použití:  python3 modpack/sestavit.py
@@ -19,7 +19,8 @@ MC_VERSION = "26.3"
 NAZEV = "Minecraft Grussova"
 SERVER_NAZEV = "Grussova"
 SERVER_ADRESA = "grussova.kibos.link"
-MODY = ["fabric-api", "simple-voice-chat"]
+MODY = ["fabric-api", "simple-voice-chat", "travelersbackpack"]
+# One Block (theoneblock + codxlib) běží jen na serveru, do klienta nepatří.
 
 API = "https://api.modrinth.com/v2"
 UA = {"User-Agent": "minecraft-server-modpack-builder"}
@@ -37,7 +38,7 @@ def fabric_loader():
     return stabilni[0]["loader"]["version"]
 
 
-def mod_soubor(slug):
+def mod_verze(slug):
     q = urllib.parse.urlencode({
         "game_versions": json.dumps([MC_VERSION]),
         "loaders": json.dumps(["fabric"]),
@@ -45,7 +46,10 @@ def mod_soubor(slug):
     verze = get_json(f"{API}/project/{slug}/version?{q}")
     if not verze:
         raise SystemExit(f"{slug}: žádná verze pro {MC_VERSION}/fabric")
-    v = verze[0]
+    return verze[0]
+
+
+def mod_soubor(v, slug):
     f = next((x for x in v["files"] if x["primary"]), v["files"][0])
     print(f"  {slug}: {v['version_number']} ({v['version_type']})")
     return {
@@ -55,6 +59,21 @@ def mod_soubor(slug):
         "downloads": [f["url"]],
         "fileSize": f["size"],
     }
+
+
+def vsechny_mody():
+    """Mody z MODY plus jejich povinné závislosti (rekurzivně), každý jen jednou."""
+    soubory, hotovo, fronta = [], set(), list(MODY)
+    while fronta:
+        slug = fronta.pop(0)
+        v = mod_verze(slug)
+        if v["project_id"] in hotovo:
+            continue
+        hotovo.add(v["project_id"])
+        soubory.append(mod_soubor(v, slug))
+        fronta += [d["project_id"] for d in v["dependencies"]
+                   if d["dependency_type"] == "required" and d.get("project_id")]
+    return soubory
 
 
 def nbt_string(s):
@@ -80,10 +99,10 @@ def main():
     index = {
         "formatVersion": 1,
         "game": "minecraft",
-        "versionId": f"{MC_VERSION}-1",
+        "versionId": f"{MC_VERSION}-2",
         "name": NAZEV,
-        "summary": f"Fabric + Simple Voice Chat pro server {SERVER_ADRESA}",
-        "files": [mod_soubor(m) for m in MODY],
+        "summary": f"Fabric + Simple Voice Chat + Traveler's Backpack pro server {SERVER_ADRESA}",
+        "files": vsechny_mody(),
         "dependencies": {"minecraft": MC_VERSION, "fabric-loader": loader},
     }
     buf = io.BytesIO()

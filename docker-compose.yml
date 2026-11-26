@@ -1,4 +1,4 @@
-# Minecraft Java server 26.3 – One Block (Fabric + One Block + Simple Voice Chat) + webová konzole – pro Synology NAS
+# Minecraft Java server 26.3 – One Block (Fabric + One Block + Simple Voice Chat + Traveler's Backpack) + webová konzole – pro Synology NAS
 #
 # Umístění na NASu:  /volume1/docker/minecraft/   (= \\192.168.10.11\docker\minecraft\)
 # Nasazení: Container Manager -> Projekt -> Vytvořit -> cesta /volume1/docker/minecraft
@@ -30,7 +30,8 @@ services:
       VERSION: "26.3"           # <- pro update změň na novější verzi (počkej, až mody vydají verzi pro ni)
       # Mody se stahují z Modrinthu automaticky ve verzi pro VERSION. Další mod = přidej jeho slug za čárku.
       # theoneblock + codxlib = One Block (jen na serveru, hráči ho v klientu nepotřebují).
-      MODRINTH_PROJECTS: "fabric-api,simple-voice-chat,theoneblock,codxlib"
+      # travelersbackpack (+ forge-config-api-port) = batohy, musí ho mít i hráči (je v modpacku).
+      MODRINTH_PROJECTS: "fabric-api,simple-voice-chat,theoneblock,codxlib,travelersbackpack,forge-config-api-port"
       MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
       # Simple Voice Chat vydává verze pro 26.x jako "beta", bez tohohle by je server nestáhl.
       MODRINTH_ALLOWED_VERSION_TYPE: "beta"

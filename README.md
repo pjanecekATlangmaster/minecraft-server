@@ -4,7 +4,14 @@
 Svět je prázdnota a uprostřed jeden blok. Když ho vykopeš, objeví se jiný. Postupně se mění biomy,
 chodí vlny mobů a občas se otevře portál do dungeonu. Zajišťuje to mod
 [One Block](https://modrinth.com/mod/theoneblock) (+ knihovna [CodxLib](https://modrinth.com/mod/codxlib)),
-server si ho stáhne sám. **Hráči ho v klientu nepotřebují**, stačí jim stávající modpack (voice chat).
+server si ho stáhne sám. **Hráči ho v klientu nepotřebují**, modpack ho záměrně neobsahuje.
+
+## Traveler's Backpack
+Mod [Traveler's Backpack](https://modrinth.com/mod/travelersbackpack) přidává batohy (nosí se na zádech,
+mají nádrže na tekutiny a nástroje). Přidává nové předměty, takže **ho musí mít server i každý hráč**.
+Server si ho stáhne sám (`travelersbackpack` + závislost `forge-config-api-port` v `MODRINTH_PROJECTS`),
+hráči ho dostanou v modpacku [`modpack/Minecraft-Grussova.mrpack`](modpack/Minecraft-Grussova.mrpack).
+Hráč bez modu se na server nepřipojí. Batoh nasadíš klávesou **B**.
 
 V `docker-compose.yml`:
 - `LEVEL: "oneblock"` – složka nového světa v `data`. Starý svět `data\world` zůstává vedle.
@@ -67,7 +74,7 @@ Server běží na **Fabricu** (vanilla hra s podporou modů) a při startu si s�
 **Každý hráč (na svém PC) – nejjednodušší cesta, modpack:**
 1. Nainstaluj **Modrinth App** (https://modrinth.com/app) a přihlas se Microsoft účtem s Minecraftem.
 2. Stáhni soubor [`modpack/Minecraft-Grussova.mrpack`](modpack/Minecraft-Grussova.mrpack) a otevři ho dvojklikem
-   (nebo v aplikaci: **+** -> Import / From file). Aplikace sama nainstaluje Minecraft 26.3, Fabric a oba mody.
+   (nebo v aplikaci: **+** -> Import / From file). Aplikace sama nainstaluje Minecraft 26.3, Fabric a mody (voice chat, Traveler's Backpack).
 3. Spusť instanci **Minecraft Grussova** -> Multiplayer, server **Grussova** už je v seznamu.
 Stejný soubor jde importovat i do Prism Launcheru (Add Instance -> Import).
 
@@ -76,9 +83,11 @@ push-to-talk je na klávese **Caps Lock** (lze přenastavit). Klávesa **G** = s
 
 **Ručně bez modpacku (oficiální launcher):**
 1. Instalátor Fabricu z https://fabricmc.net/use/installer/ -> Client -> verze **26.3** -> Install.
-2. Z Modrinthu pro 26.3 / Fabric: [Fabric API](https://modrinth.com/mod/fabric-api) a
-   [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) (verze pro 26.3 jsou zatím „beta“).
-3. Oba `.jar` dej do `%appdata%\.minecraft\mods` a spusť profil **fabric-loader-26.3**.
+2. Z Modrinthu pro 26.3 / Fabric: [Fabric API](https://modrinth.com/mod/fabric-api),
+   [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) (verze pro 26.3 jsou zatím „beta“),
+   [Traveler's Backpack](https://modrinth.com/mod/travelersbackpack) a
+   [Forge Config API Port](https://modrinth.com/mod/forge-config-api-port).
+3. Všechny `.jar` dej do `%appdata%\.minecraft\mods` a spusť profil **fabric-loader-26.3**.
 
 **Nová verze modpacku** (po změně `VERSION` nebo kvůli novým verzím modů): uprav `MC_VERSION`
 v `modpack/sestavit.py`, spusť `python3 modpack/sestavit.py` a nový `.mrpack` pošli hráčům.
@@ -104,7 +113,7 @@ Na MikroTiku proto přidej statický DNS záznam (PC v LAN musí používat Mikr
 `Successfully authenticated player` -> UDP z klienta nedorazí. Zkontroluj firewall DSM (24454/UDP povolit nad pravidly Odepřít),
 `sudo docker port minecraft` (musí obsahovat `24454/udp`), DNS na PC (`nslookup voice.kibos.link`) a restartuj PC.
 
-Hráč bez modu se na server připojí normálně, jen neslyší a nemluví.
+Hráč bez voice chatu by se jinak připojil normálně, ale kvůli Traveler's Backpack teď modpack potřebuje každý.
 Konfigurace serverové části: `data\config\voicechat\voicechat-server.properties` (vzdálenost hlasu, port…).
 
 **Update Minecraftu s mody:** před změnou `VERSION` ověř na Modrinthu, že `simple-voice-chat` a `fabric-api`

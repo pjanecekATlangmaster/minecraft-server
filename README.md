@@ -11,7 +11,7 @@ Mod [Traveler's Backpack](https://modrinth.com/mod/travelersbackpack) přidává
 mají nádrže na tekutiny a nástroje). Přidává nové předměty, takže **ho musí mít server i každý hráč**.
 Server si ho stáhne sám (`travelersbackpack` + závislost `forge-config-api-port` v `MODRINTH_PROJECTS`),
 hráči ho dostanou v modpacku [`modpack/Minecraft-Grussova.mrpack`](modpack/Minecraft-Grussova.mrpack).
-Hráč bez modu se na server nepřipojí. Batoh nasadíš klávesou **B**.
+Hráč bez modu se na server nepřipojí. Batoh, který máš na zádech, otevřeš klávesou **B**.
 
 V `docker-compose.yml`:
 - `LEVEL: "oneblock"` – složka nového světa v `data`. Starý svět `data\world` zůstává vedle.
